@@ -233,10 +233,13 @@ SELECT JMENO, PRIJMENI, SUM(CENA_ZA_HOD * POCET_HODIN) AS VYDELEK
 
 
 -- TRIGGERY --
---
+-- Before inserting a row into the OBJEDNAVKA table, check if the REF_ZAK foreign key exists in the ZAKAZNIK table.
 
---
+-- Before deleting a row from the ZAKAZNIK table, check if the customer has any associated orders in the OBJEDNAVKA table. If so, prevent the deletion and raise an error message.
 
+-- Before inserting a row into the VZTAH_MAT_OPR table, check if the material and repair IDs exist in their respective tables. If either ID is not found, prevent the insertion and raise an error message.
+
+-- Before inserting a row into the TERMIN table, check if the associated OPRAVA has a valid repair type. If the repair type is not valid, prevent the insertion and raise an error message.
 
 -- PROCEDURY --
 -- Výpis faktury dané objednávky / celkové ceny objednávky
