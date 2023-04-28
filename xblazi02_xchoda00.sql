@@ -20,6 +20,7 @@ CREATE SEQUENCE op_id_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE mat_id_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE ter_id_seq START WITH 1 INCREMENT BY 1;
 
+
 CREATE TABLE ZAKAZNIK (
     ID_ZAK NUMBER DEFAULT zak_id_seq.NEXTVAL PRIMARY KEY,
     JMENO VARCHAR(30),
@@ -113,13 +114,34 @@ CREATE TABLE VZTAH_MECH_TER(
     CONSTRAINT PK_VZ_MECH_TER PRIMARY KEY (REF_TER, REF_MECH)
 );
 
+---TRIGGERS---
+--Unify names format--
+CREATE OR REPLACE TRIGGER capitalize_jmeno_prijmeni_ZAK
+BEFORE INSERT ON ZAKAZNIK
+FOR EACH ROW
+BEGIN
+  :NEW.JMENO := INITCAP(LOWER(:NEW.JMENO));
+  :NEW.PRIJMENI := INITCAP(LOWER(:NEW.PRIJMENI));
+END;
+CREATE OR REPLACE TRIGGER capitalize_jmeno_prijmeni_MECH
+BEFORE INSERT ON MECHANIK
+FOR EACH ROW
+BEGIN
+  :NEW.JMENO := INITCAP(LOWER(:NEW.JMENO));
+  :NEW.PRIJMENI := INITCAP(LOWER(:NEW.PRIJMENI));
+END;
 
-INSERT INTO ZAKAZNIK VALUES(DEFAULT, 'Janko', 'Doe', '+123-456789032', 'johndoe@example.com', 'Main Street', '123', 'Anytown', 12345);
+
+
+
+
+---INSERT DATA---
+INSERT INTO ZAKAZNIK VALUES(DEFAULT, 'janko', 'doe', '+123-456789032', 'johndoe@example.com', 'Main Street', '123', 'Anytown', 12345);
 INSERT INTO ZAKAZNIK VALUES(DEFAULT, 'Jane', 'Doe', '+321-987654321', 'jane.doe@example.com', 'Highway Avenue', '456', 'Anothercity', 67890);
-INSERT INTO ZAKAZNIK VALUES(DEFAULT,'Bob', 'Smith', '+555-555555555', 'bob.smith@example.com', 'Elm Street', '789', 'Smalltown', 11111);
-INSERT INTO ZAKAZNIK VALUES(DEFAULT,'Bib', 'Zmith', '+666-6666666', 'bib.zmith@example.com', 'Slm Ave.', '987', 'Bigtown', 99999);
-INSERT INTO ZAKAZNIK VALUES(DEFAULT,'Beb', 'Kmith', '+777-7777777', 'beb.kmith@example.com', 'Blimp Ave.', '666', 'midtown', 55555);
-INSERT INTO ZAKAZNIK VALUES(DEFAULT, 'Hugo', 'Kokoška', '+420732349459', 'hugo@kokoska.cz', 'Tř. Kpt. Jaroše', '1829/14', 'Brno', 60200);
+INSERT INTO ZAKAZNIK VALUES(DEFAULT,'bob', 'SmITH', '+555-555555555', 'bob.smith@example.com', 'Elm Street', '789', 'Smalltown', 11111);
+INSERT INTO ZAKAZNIK VALUES(DEFAULT,'Bib', 'ymiTH', '+666-6666666', 'bib.zmith@example.com', 'Slm Ave.', '987', 'Bigtown', 99999);
+INSERT INTO ZAKAZNIK VALUES(DEFAULT,'BEb', 'KmIth', '+777-7777777', 'beb.kmith@example.com', 'Blimp Ave.', '666', 'midtown', 55555);
+INSERT INTO ZAKAZNIK VALUES(DEFAULT, 'huGo', 'kokoška', '+420732349459', 'hugo@kokoska.cz', 'Tř. Kpt. Jaroše', '1829/14', 'Brno', 60200);
 
 INSERT INTO OBJEDNAVKA VALUES(DEFAULT, 'ABC-123', 'Ford', 'Mustang', 'INV-1234', 1);
 INSERT INTO OBJEDNAVKA VALUES(DEFAULT, 'ABC-123', 'Ford', 'Mustang', 'INV-5678', 1);
@@ -153,10 +175,10 @@ INSERT INTO TERMIN VALUES(DEFAULT, DATE '2022-07-12', '12:00', 5);
 INSERT INTO TERMIN VALUES(DEFAULT, DATE '2022-03-31', '10:00', 6);
 INSERT INTO TERMIN VALUES(DEFAULT, DATE '2023-03-31', '14:30', 8);
 
-INSERT INTO MECHANIK VALUES(7493, 'John', 'Smith', '+1-1234567890', 'johnsmith@example.com', '123 Main St', 'Apt 456', 'Anytown', 12345, DATE '2022-01-01', DATE '1980-01-01', 'Oprava motoru');
+INSERT INTO MECHANIK VALUES(7493, 'john', 'Smith', '+1-1234567890', 'johnsmith@example.com', '123 Main St', 'Apt 456', 'Anytown', 12345, DATE '2022-01-01', DATE '1980-01-01', 'Oprava motoru');
 INSERT INTO MECHANIK VALUES(9102, 'Jane', 'Doe', '+1-2345678901', 'janedoe@example.com', '456 First St', 'Suite 789', 'Anycity', 23456, DATE '2022-02-01', DATE '1985-02-01', 'Oprava brzd');
 INSERT INTO MECHANIK VALUES(2483, 'Bob', 'Johnson', '+1-345678901', 'bobjohnson@example.com', '789 Second St', 'Unit 123', 'Somewhere', 34567, DATE '2022-03-01', DATE '1990-03-01', 'Oprava odpružení');
-INSERT INTO MECHANIK VALUES(6749, 'Janko', 'Mrin', '+420-123456789', 'janni@example.com', '13 jankoByva', 'Apt 13', 'Anytown', 12345, DATE '2023-01-01', DATE '1986-01-01', 'Výměna rozvodů');
+INSERT INTO MECHANIK VALUES(6749, 'janko', 'Mrin', '+420-123456789', 'janni@example.com', '13 jankoByva', 'Apt 13', 'Anytown', 12345, DATE '2023-01-01', DATE '1986-01-01', 'Výměna rozvodů');
 INSERT INTO MECHANIK VALUES(7649, 'Mima', 'Nima', '+421-234567890', 'mmimma@example.com', '15 Svätého Vila', 'Suite 7', 'Anycity', 23456, DATE '2023-02-01', DATE '1975-02-01', 'Podvozek');
 INSERT INTO MECHANIK VALUES(3489, 'Kubo', 'Smrad', '+421-345678901', 'Kubbo@example.com', '78 Seco', 'Unit 12', 'Somewhere', 34567, DATE '2023-03-01', DATE '1995-03-01', 'Oprava karoserie');
 INSERT INTO MECHANIK VALUES(1234, 'Adam', 'Březík', '735345928', 'adambrezik@samohylmb.cz', 'Závodní', '14', 'Zlín', 58612, DATE '2020-04-19', DATE '1996-09-02', NULL);
@@ -221,7 +243,7 @@ SELECT *
 SELECT DATUM, COUNT(*) POCET
     FROM TERMIN
     GROUP BY DATUM
-    ORDER BY P DESC;
+    ORDER BY POCET DESC;
 
 --GROUP BY (2/2)
 --Kolik peněz si vydělali jednotliví mechanici? (v abecedním pořadí)
@@ -232,14 +254,11 @@ SELECT JMENO, PRIJMENI, SUM(CENA_ZA_HOD * POCET_HODIN) AS VYDELEK
     ORDER BY JMENO, PRIJMENI ASC;
 
 
+
+
 -- TRIGGERY --
--- Before inserting a row into the OBJEDNAVKA table, check if the REF_ZAK foreign key exists in the ZAKAZNIK table.
 
--- Before deleting a row from the ZAKAZNIK table, check if the customer has any associated orders in the OBJEDNAVKA table. If so, prevent the deletion and raise an error message.
 
--- Before inserting a row into the VZTAH_MAT_OPR table, check if the material and repair IDs exist in their respective tables. If either ID is not found, prevent the insertion and raise an error message.
-
--- Before inserting a row into the TERMIN table, check if the associated OPRAVA has a valid repair type. If the repair type is not valid, prevent the insertion and raise an error message.
 
 -- PROCEDURY --
 -- Výpis faktury dané objednávky / celkové ceny objednávky
