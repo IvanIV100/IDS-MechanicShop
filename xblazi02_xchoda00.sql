@@ -165,8 +165,8 @@ INSERT INTO ZAKAZNIK VALUES(DEFAULT, 'huGo', 'kokoška', '+420732349459', 'hugo@
 
 INSERT INTO OBJEDNAVKA VALUES(DEFAULT, 'ABC-123', 'Ford', 'Mustang', 'INV-1234', 1);
 INSERT INTO OBJEDNAVKA VALUES(DEFAULT, 'ABC-123', 'Ford', 'Mustang', 'INV-5678', 1);
-INSERT INTO OBJEDNAVKA VALUES(DEFAULT, 'ABC-789', 'Ford', 'Mondeo', 'INV-9012', 3);
-INSERT INTO OBJEDNAVKA VALUES(DEFAULT, 'klk-753', 'Honda', 'Civic', 'INV-10012', 2);
+INSERT INTO OBJEDNAVKA VALUES(DEFAULT, 'ABC-789', 'Ford', 'Mondeo', 'INV-9012', 1);
+INSERT INTO OBJEDNAVKA VALUES(DEFAULT, 'klk-753', 'Honda', 'Civic', 'INV-10012', 1);
 INSERT INTO OBJEDNAVKA VALUES(DEFAULT, 'OLI-631', 'Toyota', 'Hillux', 'INV-1112', 4);
 INSERT INTO OBJEDNAVKA VALUES(DEFAULT, 'GHI-789', 'Peugeot', '308', 'INV-1242', 5);
 
@@ -276,9 +276,7 @@ SELECT JMENO, PRIJMENI, SUM(CENA_ZA_HOD * POCET_HODIN) AS VYDELEK
     ORDER BY JMENO, PRIJMENI ASC;
 
 
-
-
-
+---big sel---
 
 
 -- PROCEDURY --
@@ -324,5 +322,18 @@ SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
 -- 
 
 
--- SELECT S WITH A CASE
--- 
+
+--Vieme zakaznikovi posielat automaticke ponuky? (mame deal s kokoska.cz)
+WITH zakaznik_data AS (
+    SELECT jmeno, prijmeni, email,
+
+    CASE
+        WHEN email LIKE '%@kokoska.cz' THEN 'Ano'
+        ELSE 'Ne'
+    END AS autoPost
+    FROM zakaznik
+)
+
+SELECT jmeno, prijmeni, email, autoPost
+FROM zakaznik_data
+ORDER BY prijmeni ASC;
